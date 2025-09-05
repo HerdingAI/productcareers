@@ -23,7 +23,7 @@ export default function JobList() {
       setLoading(true)
 
       // Build the query for enriched jobs table
-      const fetchJobs = supabase.from<ProductJob>('jobs').select(
+      const fetchJobs = supabase.from('jobs').select(
         `
         id, title, description, type, created_at, apply_url,
         company, seniority_level, location_metro, work_arrangement,
@@ -40,7 +40,7 @@ export default function JobList() {
       const { data, error } = await fetchJobs.order('title')
       if (error) throw error
       console.log('data', data)
-      setJobs(data || [])
+      setJobs((data as ProductJob[]) || [])
     } catch (e) {
       console.error(e)
     } finally {
