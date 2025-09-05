@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { supabase } from 'lib/supabaseClient'
 import { definitions } from 'lib/definitions'
 import { useRouter } from 'next/router'
-import { CalendarIcon, LocationMarkerIcon, UsersIcon } from '@heroicons/react/solid'
+import { CalendarIcon, MapPinIcon, UserGroupIcon } from '@heroicons/react/24/solid'
 
 type JobData = definitions['jobs'] & {
   company: definitions['companies']
@@ -27,7 +27,7 @@ export default function JobList() {
       setLoading(true)
 
       // Build the query
-      const fetchJobs = supabase.from<JobData>('jobs').select(
+      const fetchJobs = supabase.from('jobs').select(
         `
         id, title, description, type, fts,
         company:companies(id, name)
@@ -40,9 +40,10 @@ export default function JobList() {
       }
 
       // Fetch all data
-      const { data }: { data: any } = await fetchJobs.order('title').throwOnError()
+      const { data, error } = await fetchJobs.order('title')
+      if (error) throw error
       console.log('data', data)
-      setJobs(data)
+      setJobs(data || [])
     } catch (e) {
       console.error(e)
     } finally {
@@ -93,14 +94,14 @@ const JobCard = ({ job }: { job: JobData }) => {
           <div className="mt-2 sm:flex sm:justify-between">
             <div className="sm:flex">
               <p className="flex items-center text-sm text-gray-500">
-                <UsersIcon
+                <UserGroupIcon
                   className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400"
                   aria-hidden="true"
                 />
                 Job.department
               </p>
               <p className="mt-2 flex items-center text-sm text-gray-500 sm:mt-0 sm:ml-6">
-                <LocationMarkerIcon
+                <MapPinIcon
                   className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400"
                   aria-hidden="true"
                 />
