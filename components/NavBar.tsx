@@ -1,5 +1,5 @@
 import { Fragment } from 'react'
-import { MenuIcon } from '@heroicons/react/outline'
+import { Bars3Icon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 
 import SITE from 'config/site'
@@ -28,7 +28,7 @@ export default function NavBar() {
               </Link>
               <div className="-mr-2 flex items-center md:hidden">
                 <span className="sr-only">Open main menu</span>
-                <MenuIcon className="h-6 w-6" aria-hidden="true" />
+                <Bars3Icon className="h-6 w-6" aria-hidden="true" />
               </div>
             </div>
           </div>
