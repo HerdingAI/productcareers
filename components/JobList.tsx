@@ -1,18 +1,14 @@
 import useFilterState from 'lib/useFilterState'
 import { useEffect, useState } from 'react'
 import { supabase } from 'lib/supabaseClient'
-import { definitions } from 'lib/definitions'
+import { ProductJob } from 'lib/definitions'
 import { useRouter } from 'next/router'
 import { CalendarIcon, LocationMarkerIcon, UsersIcon } from '@heroicons/react/solid'
-
-type JobData = definitions['jobs'] & {
-  company: definitions['companies']
-}
 
 export default function JobList() {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
-  const [jobs, setJobs] = useState<JobData[]>([])
+  const [jobs, setJobs] = useState<ProductJob[]>([])
   const filterState = useFilterState()
   const searchText = filterState.q
   const selectedTypes = filterState.types
@@ -26,11 +22,12 @@ export default function JobList() {
     try {
       setLoading(true)
 
-      // Build the query
-      const fetchJobs = supabase.from<JobData>('jobs').select(
+      // Build the query for enriched jobs table
+      const fetchJobs = supabase.from<ProductJob>('jobs').select(
         `
-        id, title, description, type, fts,
-        company:companies(id, name)
+        id, title, description, type, created_at, apply_url,
+        company, seniority_level, location_metro, work_arrangement,
+        salary_min, salary_max, company_stage, primary_responsibilities
         `
       )
 
@@ -42,7 +39,7 @@ export default function JobList() {
       // Fetch all data
       const { data }: { data: any } = await fetchJobs.order('title').throwOnError()
       console.log('data', data)
-      setJobs(data)
+      setJobs(data || [])
     } catch (e) {
       console.error(e)
     } finally {
@@ -51,7 +48,7 @@ export default function JobList() {
   }
 
   // Apply filters on the client
-  let filtered: JobData[] = jobs
+  let filtered: ProductJob[] = jobs
   if (selectedTypes.length) filtered = filtered.filter((x) => selectedTypes.includes(x.type))
 
   // Render results
@@ -66,7 +63,7 @@ export default function JobList() {
   )
 }
 
-const JobCard = ({ job }: { job: JobData }) => {
+const JobCard = ({ job }: { job: ProductJob }) => {
   return (
     <a href="#" className="block hover:bg-gray-50">
       <div className="flex items-center px-4">
@@ -82,7 +79,7 @@ const JobCard = ({ job }: { job: JobData }) => {
         <div className="px-4 py-4 flex-1">
           <div className="flex items-center justify-between">
             <p className="text-md font-bold truncate text-brand">
-              {job.title} at {job.company.name}
+              {job.title} at {job.company}
             </p>
             <div className="ml-2 flex-shrink-0 flex">
               <p className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-brand-100 text-brand-800">
@@ -97,14 +94,14 @@ const JobCard = ({ job }: { job: JobData }) => {
                   className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400"
                   aria-hidden="true"
                 />
-                Job.department
+                {job.seniority_level || 'PM Role'}
               </p>
               <p className="mt-2 flex items-center text-sm text-gray-500 sm:mt-0 sm:ml-6">
                 <LocationMarkerIcon
                   className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400"
                   aria-hidden="true"
                 />
-                Job Location
+                {job.location_metro || job.work_arrangement || 'Remote'}
               </p>
             </div>
             <div className="mt-2 flex items-center text-sm text-gray-500 sm:mt-0">
@@ -113,7 +110,10 @@ const JobCard = ({ job }: { job: JobData }) => {
                 aria-hidden="true"
               />
               <p>
-                Closing on <time dateTime={new Date().toDateString()}>Closing</time>
+                {job.salary_min && job.salary_max 
+                  ? `$${job.salary_min}k - $${job.salary_max}k`
+                  : 'Competitive Salary'
+                }
               </p>
             </div>
           </div>

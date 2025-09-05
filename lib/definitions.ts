@@ -859,3 +859,62 @@ export interface parameters {
 export interface operations {}
 
 export interface external {}
+
+// Phase 1: ProductJob interface for enriched PM job data
+export interface ProductJob {
+  // Core fields (existing compatibility)
+  id: number
+  title: string
+  description: string
+  type: "full_time" | "part_time" | "contract" | "internship"
+  created_at?: string
+  apply_url?: string
+  fts?: string  // Full-text search field
+  
+  // Company information (embedded, no longer needs JOIN)
+  company: string
+  company_id?: number
+  
+  // PM-specific fields based on Product Jobs Taxonomy
+  // Role Definition
+  seniority_level?: string  // IC Track: APM, PM, Senior PM, Staff PM, Principal PM | Management Track: PM Manager, Director, VP, SVP/EVP, CPO
+  product_lifecycle_focus?: string  // 0→1, 1→10, 10→100, 100→1000, Turnaround/Revival, Sunset/Migration
+  scope_of_ownership?: string  // Single Feature, Product Area, Product Line, Product Suite, Platform, Full Portfolio
+  primary_responsibilities?: string  // Discovery & Research, Strategy & Roadmapping, Execution & Delivery, Growth & Experimentation
+  strategic_tactical_balance?: string  // Strategy-Heavy (70%+), Balanced (40-60%), Execution-Heavy (70%+)
+  
+  // Company Context
+  company_stage?: string  // Pre-seed, Seed, Series A, Series B, Series C+, Late-stage Private, Pre-IPO, Public
+  product_culture_type?: string  // Product-Led (PLG), Sales-Led, Engineering-Led, Design-Led, Data-Driven
+  industry_vertical?: string  // FinTech, HealthTech, EdTech, E-commerce, B2B SaaS, Consumer Tech, MarketPlace
+  team_size_composition?: string  // Solo PM, Small (2-5 PMs), Medium (6-15 PMs), Large (15+ PMs)
+  business_model?: string  // B2B Enterprise, B2B SMB, B2C, B2B2C, Marketplace/Platform, Subscription
+  
+  // Work Style
+  product_methodology?: string  // Agile/Scrum, Kanban, Shape Up, Dual-Track Discovery, Lean Startup
+  technical_depth_required?: string  // Non-technical, Technical Familiarity, Technical Proficiency, Engineering Background
+  collaboration_model?: string  // Squad/Pod (embedded), Triad (PM-Design-Eng), Matrix Organization
+  tools_platforms?: string  // Analytics: Amplitude, Mixpanel | Roadmapping: Productboard, Aha! | Design: Figma
+  customer_type?: string  // End Consumer, Prosumer, Developers, SMB, Mid-Market, Enterprise, Government
+  
+  // Requirements
+  domain_expertise?: string  // Payments/FinTech, HIPAA/Healthcare, GDPR/Privacy, AI/ML Models, Marketplaces
+  kpi_ownership?: string  // Revenue (ARR/MRR), User Growth (DAU/MAU), Retention/Churn, NPS/CSAT
+  reporting_structure?: string  // Reports to: CEO/Founder, CPO, CTO, VP Product, GM Business Unit
+  
+  // Skills (for tag generation)
+  core_pm_skills?: string  // Comma-separated PM skills
+  technical_skills?: string  // Comma-separated technical skills
+  leadership_skills?: string  // Comma-separated leadership skills
+  
+  // Logistics
+  location_metro?: string  // Primary metro area
+  work_arrangement?: string  // On-site Required, Hybrid, Remote-Regional, Remote-Global
+  salary_min?: number  // Minimum salary
+  salary_max?: number  // Maximum salary
+  
+  // System fields
+  is_currently_active?: boolean
+  is_product_job?: boolean
+  extraction_confidence?: "high" | "medium" | "low"
+}
