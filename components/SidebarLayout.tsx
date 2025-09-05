@@ -3,11 +3,11 @@ import SITE from 'config/site'
 import NavBar from 'components/NavBar'
 import Hero from 'components/Hero'
 import Footer from 'components/Footer'
-import { ReactChild, useState } from 'react'
+import { ReactNode, useState } from 'react'
 import Filters from './Filters'
 import { Fragment } from 'react'
 import { Menu, Transition, Listbox } from '@headlessui/react'
-import { CheckIcon, SelectorIcon } from '@heroicons/react/solid'
+import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/24/solid'
 import { useRouter } from 'next/router'
 
 
@@ -18,7 +18,7 @@ const sorting = [
   { id: 'NAME_DESC', name: 'Name Ascending', field: 'name', asc: false },
 ]
 
-export default function SidebarLayout({ children }: { children: ReactChild }) {
+export default function SidebarLayout({ children }: { children: ReactNode }) {
   const [showFilters, setShowFilters] = useState(true)
   const router = useRouter()
   const { query } = router
@@ -74,7 +74,7 @@ function SortDropdown() {
             <Listbox.Button className="bg-white relative w-full border-2 rounded shadow-sm pl-3 pr-10 py-2 text-left cursor-default focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 text-xs">
               <span className="block truncate">{selected.name}</span>
               <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-                <SelectorIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
+                <ChevronUpDownIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
               </span>
             </Listbox.Button>
 

@@ -859,3 +859,44 @@ export interface parameters {
 export interface operations {}
 
 export interface external {}
+
+export interface Database {
+  public: {
+    Tables: {
+      categories: {
+        Row: definitions['categories']
+        Insert: definitions['categories']
+        Update: Partial<definitions['categories']>
+      }
+      companies: {
+        Row: definitions['companies']
+        Insert: definitions['companies']
+        Update: Partial<definitions['companies']>
+      }
+      countries: {
+        Row: definitions['countries']
+        Insert: definitions['countries']
+        Update: Partial<definitions['countries']>
+      }
+      departments: {
+        Row: definitions['departments']
+        Insert: definitions['departments']
+        Update: Partial<definitions['departments']>
+      }
+      jobs: {
+        Row: definitions['jobs']
+        Insert: definitions['jobs']
+        Update: Partial<definitions['jobs']>
+      }
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      [_ in never]: never
+    }
+    Enums: {
+      [_ in never]: never
+    }
+  }
+}

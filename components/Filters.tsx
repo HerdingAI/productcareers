@@ -29,8 +29,8 @@ export default function Filters() {
 
   const loadPage = async () => {
     const [{ data: departments }, { data: countries }] = await Promise.all([
-      supabase.from<definitions['departments']>('departments').select('id, name').order('name'),
-      supabase.from<definitions['countries']>('countries').select('id, name').order('name'),
+      supabase.from('departments').select('id, name').order('name'),
+      supabase.from('countries').select('id, name').order('name'),
     ])
 
     if (departments) setDepartments(departments)
